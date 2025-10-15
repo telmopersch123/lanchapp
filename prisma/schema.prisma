@@ -16,7 +16,7 @@ datasource db {
 model Restaurant {
   id             String         @id @default(uuid())
   name           String
-  slug           String
+  slug           String         @unique
   description    String
   avatarImageUrl String
   coverImageUrl  String
@@ -43,7 +43,7 @@ model Product {
   description    String
   price          Decimal
   imageUrl       String
-  ingredients     String[]
+  ingredients    String[]
   restaurant     Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   orderProduct   OrderProduct[]
   restaurantId   String
