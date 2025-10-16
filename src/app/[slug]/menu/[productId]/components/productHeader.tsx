@@ -12,7 +12,7 @@ interface ProductHeaderProps {
 const ProductHeader = ({ product }: ProductHeaderProps) => {
   const router = useRouter();
   return (
-    <div className="relative w-full h-[300px]">
+    <div className="relative w-full min-h-[300px]">
       <Button
         className="absolute top-4 left-4 z-50 rounded-full"
         variant="secondary"
