@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 import { ChefHatIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import { CartContext } from "../../contexts/card";
+import { CartContext } from "../../contexts/cart";
 import CartSheet from "./cart-sheet";
 interface ProductDetailsProps {
   product: Prisma.ProductGetPayload<{
