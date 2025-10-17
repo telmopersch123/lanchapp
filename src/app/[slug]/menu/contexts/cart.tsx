@@ -3,7 +3,7 @@ import { Product } from "@prisma/client";
 
 import { createContext, useState } from "react";
 
-interface CartProduct
+export interface CartProduct
   extends Pick<Product, "id" | "name" | "price" | "imageUrl"> {
   quantity: number;
 }
@@ -13,6 +13,9 @@ export interface ICartContext {
   products: CartProduct[];
   toggleCart: () => void;
   addProduct: (product: CartProduct) => void;
+  decreaseCart: (productId: string) => void;
+  increaseCart: (productId: string) => void;
+  removeProduct: (productId: string) => void;
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -20,6 +23,9 @@ export const CartContext = createContext<ICartContext>({
   products: [],
   toggleCart: () => {},
   addProduct: () => {},
+  decreaseCart: () => {},
+  increaseCart: () => {},
+  removeProduct: () => {},
 });
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
@@ -47,6 +53,38 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       return [...prevProducts, newProduct];
     });
   };
+
+  const removeProduct = (productId: string) => {
+    setProducts((prevProducts) => {
+      return prevProducts.filter((product) => product.id !== productId);
+    });
+  };
+
+  const decreaseCart = (productId: string) => {
+    setProducts((prevProducts) => {
+      return prevProducts.map((product) => {
+        if (product.id !== productId) return product;
+        if (product.quantity === 1) return product;
+
+        return {
+          ...product,
+          quantity: product.quantity - 1,
+        };
+      });
+    });
+  };
+
+  const increaseCart = (productId: string) => {
+    setProducts((prevProducts) => {
+      return prevProducts.map((product) => {
+        if (product.id !== productId) return product;
+        return {
+          ...product,
+          quantity: product.quantity + 1,
+        };
+      });
+    });
+  };
   return (
     <CartContext.Provider
       value={{
@@ -54,6 +92,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         products,
         toggleCart,
         addProduct,
+        decreaseCart,
+        increaseCart,
+        removeProduct,
       }}
     >
       {children}

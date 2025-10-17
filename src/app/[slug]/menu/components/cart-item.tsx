@@ -2,13 +2,16 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helpers/format-currency";
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
-import { CartProduct } from "../contexts/cart";
+import { useContext } from "react";
+import { CartContext, CartProduct } from "../contexts/cart";
 
 interface CartItemProps {
   item: CartProduct;
 }
 
 const CartItem = ({ item }: CartItemProps) => {
+  const { decreaseCart, increaseCart, removeProduct } = useContext(CartContext);
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -28,17 +31,30 @@ const CartItem = ({ item }: CartItemProps) => {
             {formatCurrency(Number(item.price))}
           </p>
           <div className="flex items-center gap-1 text-center">
-            <Button variant={"outline"} className="h-6 w-6 rounded-lg">
+            <Button
+              onClick={() => decreaseCart(item.id)}
+              variant={"outline"}
+              className="h-6 w-6 rounded-lg"
+            >
               <ChevronLeftIcon />
             </Button>
             <p className="text-xs text-muted-foreground w-5">{item.quantity}</p>
-            <Button variant={"destructive"} className="h-6 w-6 rounded-lg">
+            <Button
+              onClick={() => increaseCart(item.id)}
+              variant={"destructive"}
+              className="h-6 w-6 rounded-lg"
+            >
               <ChevronRightIcon />
             </Button>
           </div>
         </div>
       </div>
-      <Button className="h-7 w-7 rounded-lg" variant={"outline"}>
+      <Button
+        title="Remover"
+        onClick={() => removeProduct(item.id)}
+        className="h-7 w-7 rounded-lg"
+        variant={"outline"}
+      >
         <TrashIcon />
       </Button>
     </div>
