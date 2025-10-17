@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { ConsumptionMethod } from "@prisma/client";
+import { redirect } from "next/navigation";
 import { removeCpfMask } from "../helpers/cpf";
 
 interface CreateOrderInput {
@@ -56,4 +57,5 @@ export const createOrder = async (input: CreateOrderInput) => {
       },
     },
   });
+  redirect(`/${input.slug}/orders?cpf=${removeCpfMask(input.customerCpf)}`);
 };
