@@ -28,3 +28,7 @@ export const isValidCpf = (cpf: string): boolean => {
 
   return true;
 };
+
+export const removeCpfMask = (cpf: string): string => {
+  return cpf.replace(/[\.\-]/g, "");
+};
