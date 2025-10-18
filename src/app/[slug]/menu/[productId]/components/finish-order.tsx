@@ -22,14 +22,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConsumptionMethod } from "@prisma/client";
+import { loadStripe } from "@stripe/stripe-js";
 import { Loader2 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useContext, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
-import { toast } from "sonner";
 import { z } from "zod";
 import { createOrder } from "../../actions/create-order";
+import { createStripeCheckout } from "../../actions/create-stripe-checkout";
 import { CartContext } from "../../contexts/cart";
 import { isValidCpf } from "../../helpers/cpf";
 
@@ -67,16 +68,29 @@ const FinishOrder = ({ open, setOpen }: FinishOrderButtonProps) => {
       const consumptionMethod = searchParams.get(
         "consumptionMethod"
       ) as ConsumptionMethod;
+
       startTransition(async () => {
-        await createOrder({
+        const order = await createOrder({
           customerName: data.name,
           customerCpf: data.cpf,
           products,
-          consumptionMethod: consumptionMethod,
+          consumptionMethod,
           slug,
         });
-        setOpen(false);
-        toast.success("Pedido realizado com sucesso!");
+        const { sessionId } = await createStripeCheckout({
+          products,
+          orderId: order.id,
+          slug,
+          consumptionMethod,
+          cpf: data.cpf,
+        });
+        if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) return;
+        const stripe = await loadStripe(
+          process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
+        );
+        stripe?.redirectToCheckout({
+          sessionId: sessionId,
+        });
       });
     } catch (error) {
       console.log(error);

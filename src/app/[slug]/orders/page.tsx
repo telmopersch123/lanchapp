@@ -1,3 +1,4 @@
+import { serializeDecimal } from "@/data/get-restaurant-by-slug";
 import { db } from "@/lib/prisma";
 import { isValidCpf, removeCpfMask } from "../menu/helpers/cpf";
 import CpfForm from "./components/cpf-form";
@@ -12,7 +13,6 @@ const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
   if (!cpf) {
     <CpfForm />;
   }
-
   if (!isValidCpf(cpf)) {
     return <CpfForm />;
   }
@@ -37,7 +37,7 @@ const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
       },
     },
   });
-  return <OrdersList orders={orders} />;
+  return <OrdersList orders={serializeDecimal(orders)} />;
 };
 
 export default OrdersPage;

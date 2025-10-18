@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -6,6 +7,7 @@ import { OrderStatus, Prisma } from "@prisma/client";
 import { ChevronLeftIcon, ScrollTextIcon } from "lucide-react";
 
 import Image from "next/image";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 interface OrdersListProps {
   orders: Prisma.OrderGetPayload<{
     include: {
@@ -23,12 +25,30 @@ const getStatusLabel = (status: OrderStatus) => {
       return "Pendente";
     case "IN_PREPARATION":
       return "Em preparo";
+    case "PAYMENT_CONFIRMED":
+      return "Pagamento confirmado";
+    case "PAYMENT_FAILED":
+      return "Pagamento falhou";
   }
 };
 const OrdersList = ({ orders }: OrdersListProps) => {
+  const { slug } = useParams<{ slug: string }>();
+  const searchParams = useSearchParams();
+
+  const router = useRouter();
+  const handleBackClick = () => {
+    router.push(
+      `/${slug}/menu?consumptionMethod=${searchParams.get("consumptionMethod")}`
+    );
+  };
   return (
     <div className="space-y-6 p-6">
-      <Button size="icon" variant="secondary" className="rounded-full">
+      <Button
+        onClick={handleBackClick}
+        size="icon"
+        variant="secondary"
+        className="rounded-full"
+      >
         <ChevronLeftIcon />
       </Button>
 
