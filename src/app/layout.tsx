@@ -21,7 +21,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "LanchApp",
-  description: "Aplicação de gerenciamento de pedidos de lanches",
+  description: "Aplicação de gerenciamento de pedidos de lanches!",
 };
 
 export default function RootLayout({
