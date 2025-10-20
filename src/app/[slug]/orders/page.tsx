@@ -15,7 +15,6 @@ const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
     return <CpfForm />;
   }
   if (!isValidCpf(cpf)) {
-    <p>CPF inválido</p>;
     return <CpfForm />;
   }
   const orders = await db.order.findMany({
