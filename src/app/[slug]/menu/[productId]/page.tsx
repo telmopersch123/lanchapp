@@ -1,6 +1,8 @@
+import { notFound } from "next/navigation";
+
 import { serializeDecimal } from "@/data/get-restaurant-by-slug";
 import { db } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+
 import ProductDetails from "./components/product-details";
 import ProductHeader from "./components/productHeader";
 
@@ -25,16 +27,14 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   });
   const productsConverted = serializeDecimal(product);
   if (!product) return notFound();
-
   if (product.restaurant.slug.toUpperCase() !== slug.toUpperCase())
     return notFound();
+
   return (
-    <>
-      <div className="flex h-full flex-col">
-        <ProductHeader product={productsConverted} />
-        <ProductDetails product={productsConverted} />
-      </div>
-    </>
+    <div className="flex h-full flex-col">
+      <ProductHeader product={productsConverted} />
+      <ProductDetails product={productsConverted} />
+    </div>
   );
 };
 

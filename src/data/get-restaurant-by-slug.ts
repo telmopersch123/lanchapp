@@ -1,8 +1,9 @@
-import { db } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
+import { db } from "@/lib/prisma";
+
 // Função auxiliar para converter Decimal -> number
-export function serializeDecimal(obj: any) {
+export function serializeDecimal<T>(obj: T) {
   return JSON.parse(
     JSON.stringify(obj, (key, value) =>
       value instanceof Prisma.Decimal ? Number(value) : value

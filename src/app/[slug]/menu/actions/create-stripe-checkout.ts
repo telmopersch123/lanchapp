@@ -1,8 +1,10 @@
 "use server";
 
-import { db } from "@/lib/prisma";
 import { headers } from "next/headers";
 import Stripe from "stripe";
+
+import { db } from "@/lib/prisma";
+
 import { CartProduct } from "../contexts/cart";
 import { removeCpfMask } from "../helpers/cpf";
 
@@ -58,7 +60,7 @@ export const createStripeCheckout = async ({
       },
       quantity: product.quantity,
     })),
-    success_url: `${origin}/${slug}/orders?${searchParams.toString()}`,
+    success_url: `${origin}/${slug}/menu?${searchParams.toString()}`,
     cancel_url: `${origin}/${slug}/menu?${searchParams.toString()}`,
   });
 

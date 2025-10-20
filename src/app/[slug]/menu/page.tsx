@@ -1,11 +1,18 @@
-import { getRestaurantBySlug } from "@/data/get-restaurant-by-slug";
 import { notFound } from "next/navigation";
+
+import { getRestaurantBySlug } from "@/data/get-restaurant-by-slug";
+
 import RestaurantCategories from "./components/categories";
 import RestaurantHeader from "./components/header";
+import PopupHandler from "./components/PopupHandler";
 
 interface RestaurantMenuPageProps {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ consumptionMethod: string }>;
+  params: Promise<{ slug: string }>; // Change to Promise
+  searchParams: Promise<{
+    consumptionMethod: string;
+    cpf: string;
+    showPopup: boolean;
+  }>;
 }
 
 const isConsumptionMethodValid = (consumptionMethod: string) => {
@@ -17,18 +24,29 @@ const RestaurantMenuPage = async ({
   searchParams,
 }: RestaurantMenuPageProps) => {
   const { slug } = await params;
-  const consumptionMethod = await searchParams.then(
-    (res) => res.consumptionMethod
-  );
+  const { cpf, consumptionMethod } = await searchParams;
+
   if (!consumptionMethod) return notFound();
   if (!isConsumptionMethodValid(consumptionMethod)) return notFound();
   const restaurant = await getRestaurantBySlug(slug);
   if (!restaurant) return notFound();
+
+  // let lastOrder = null;
+  // if (cpf) {
+  //   lastOrder = await db.order.findFirst({
+  //     where: { customerCPF: cpf, status: "PAYMENT_CONFIRMED" },
+  //     orderBy: { createdAt: "desc" },
+  //   });
+  // }
+
   return (
-    <h1>
-      <RestaurantHeader restaurant={restaurant} />
-      <RestaurantCategories restaurant={restaurant} />
-    </h1>
+    <>
+      <div className="flex flex-col h-screen overflow-hidden">
+        <RestaurantHeader restaurant={restaurant} />
+        <RestaurantCategories restaurant={restaurant} />
+      </div>
+      <PopupHandler cpf={cpf} />
+    </>
   );
 };
 

@@ -1,13 +1,17 @@
 "use client";
+import { OrderStatus, Prisma } from "@prisma/client";
+import { ChevronLeftIcon, ScrollTextIcon } from "lucide-react";
+import Image from "next/image";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useContext } from "react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/helpers/format-currency";
-import { OrderStatus, Prisma } from "@prisma/client";
-import { ChevronLeftIcon, ScrollTextIcon } from "lucide-react";
 
-import Image from "next/image";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { CartContext } from "../../menu/contexts/cart";
 interface OrdersListProps {
   orders: Prisma.OrderGetPayload<{
     include: {
@@ -31,11 +35,24 @@ const getStatusLabel = (status: OrderStatus) => {
       return "Pagamento falhou";
   }
 };
+
 const OrdersList = ({ orders }: OrdersListProps) => {
   const { slug } = useParams<{ slug: string }>();
+  const { addProduct } = useContext(CartContext);
   const searchParams = useSearchParams();
-
   const router = useRouter();
+
+  const handleAddToCart = (pedidoId: number) => {
+    {
+      orders
+        .find((order) => order.id === pedidoId)
+        ?.orderProduct.map((product) =>
+          addProduct({ ...product.product, quantity: product.quantity })
+        );
+    }
+    toast.success("Pedido adicionado ao carrinho");
+  };
+
   const handleBackClick = () => {
     router.push(
       `/${slug}/menu?consumptionMethod=${searchParams.get("consumptionMethod")}`
@@ -95,11 +112,14 @@ const OrdersList = ({ orders }: OrdersListProps) => {
             ))}
             <Separator />
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-muted-foreground">
-                Total
-              </p>
               <p className="text-sm font-semibold">
                 {formatCurrency(Number(order.total))}
+              </p>
+              <p
+                onClick={() => handleAddToCart(order.id)}
+                className="text-xs cursor-pointer text-destructive font-semibold"
+              >
+                Adicionar ao carrinho
               </p>
             </div>
           </CardContent>

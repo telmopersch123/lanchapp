@@ -1,8 +1,10 @@
 "use server";
 
-import { db } from "@/lib/prisma";
 import { ConsumptionMethod } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+
+import { db } from "@/lib/prisma";
+
 import { removeCpfMask } from "../helpers/cpf";
 
 interface CreateOrderInput {

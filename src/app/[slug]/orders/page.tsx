@@ -1,5 +1,6 @@
 import { serializeDecimal } from "@/data/get-restaurant-by-slug";
 import { db } from "@/lib/prisma";
+
 import { isValidCpf, removeCpfMask } from "../menu/helpers/cpf";
 import CpfForm from "./components/cpf-form";
 import OrdersList from "./components/order-list";
@@ -11,9 +12,10 @@ interface OrdersPageProps {
 const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
   const { cpf } = await searchParams;
   if (!cpf) {
-    <CpfForm />;
+    return <CpfForm />;
   }
   if (!isValidCpf(cpf)) {
+    <p>CPF inválido</p>;
     return <CpfForm />;
   }
   const orders = await db.order.findMany({

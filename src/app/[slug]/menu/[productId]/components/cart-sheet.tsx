@@ -1,3 +1,5 @@
+import { useContext, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -7,7 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { formatCurrency } from "@/helpers/format-currency";
-import { useContext, useState } from "react";
+
 import CartItem from "../../components/cart-item";
 import { CartContext } from "../../contexts/cart";
 import FinishOrder from "./finish-order";
@@ -15,6 +17,13 @@ import FinishOrder from "./finish-order";
 const CartSheet = () => {
   const [finishOrder, setFinishOrder] = useState(false);
   const { isOpen, toggleCart, products, total } = useContext(CartContext);
+  const handleCloseCart = () => {
+    if (products.length === 0) {
+      toggleCart();
+      return;
+    }
+    setFinishOrder(true);
+  };
   return (
     <Sheet open={isOpen} onOpenChange={toggleCart}>
       <SheetContent className="w-[80%]">
@@ -35,7 +44,7 @@ const CartSheet = () => {
               </div>
             </CardContent>
           </Card>
-          <Button className="w-full" onClick={() => setFinishOrder(true)}>
+          <Button className="w-full" onClick={handleCloseCart}>
             Finalizar Pedido
           </Button>
           <FinishOrder open={finishOrder} setOpen={setFinishOrder} />

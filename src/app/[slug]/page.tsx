@@ -1,12 +1,14 @@
-import { getRestaurantBySlug } from "@/data/get-restaurant-by-slug";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
+import { getRestaurantBySlug } from "@/data/get-restaurant-by-slug";
+
 import ConsumptionOption from "./components/consumption-option";
 
 interface RestaurantPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 const RestaurantPage = async ({ params }: RestaurantPageProps) => {
@@ -14,7 +16,7 @@ const RestaurantPage = async ({ params }: RestaurantPageProps) => {
   const restaurant = await getRestaurantBySlug(slug);
   if (!restaurant) return notFound();
   return (
-    <div className="h-screen flex flex-col items-center justify-center px-6 pt-24">
+    <div className="h-screen flex flex-col items-center justify-center  px-6 pt-24 ">
       <div className="flex flex-col items-center gap-2">
         <Image
           src={restaurant.avatarImageUrl}

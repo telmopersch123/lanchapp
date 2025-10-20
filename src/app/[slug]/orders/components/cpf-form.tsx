@@ -1,4 +1,10 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { PatternFormat } from "react-number-format";
+import z from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -19,11 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { PatternFormat } from "react-number-format";
-import z from "zod";
+
 import { isValidCpf, removeCpfMask } from "../../menu/helpers/cpf";
 const formSchema = z.object({
   cpf: z
@@ -32,10 +34,10 @@ const formSchema = z.object({
     .min(1, { message: "O CPF é obrigatório" })
     .refine((value) => isValidCpf(value), "CPF inválido"),
 });
-interface FinishOrderButtonProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
+// interface FinishOrderButtonProps {
+//   open: boolean;
+//   setOpen: (open: boolean) => void;
+// }
 
 type FormSchema = z.infer<typeof formSchema>;
 
@@ -59,7 +61,9 @@ const CpfForm = () => {
   };
   return (
     <Drawer open>
-      <DrawerTrigger>Open</DrawerTrigger>
+      <DrawerTrigger asChild>
+        <button className="hidden" />
+      </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Visulizar Pedidos</DrawerTitle>
@@ -94,7 +98,7 @@ const CpfForm = () => {
               <Button variant="destructive" className="w-full rounded-full">
                 Confirmar
               </Button>
-              <DrawerClose>
+              <DrawerClose asChild>
                 <Button
                   onClick={handleCancel}
                   variant="outline"

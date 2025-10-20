@@ -1,7 +1,8 @@
-import { db } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+
+import { db } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   if (!process.env.STRIPE_SECRET_KEY) {

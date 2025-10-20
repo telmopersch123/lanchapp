@@ -1,12 +1,13 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Restaurant } from "@prisma/client";
 import { ChevronLeftIcon, ScrollTextIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+
 interface RestaurantHeaderProps {
-  restaurant: Pick<Restaurant, "name" | "coverImageUrl">;
+  restaurant: Pick<Restaurant, "name" | "coverImageUrl" | "avatarImageUrl">;
 }
 
 const RestaurantHeader = ({ restaurant }: RestaurantHeaderProps) => {
@@ -18,12 +19,12 @@ const RestaurantHeader = ({ restaurant }: RestaurantHeaderProps) => {
     router.push(`/${slug}/orders?consumptionMethod=${consumptionMethod}`);
   };
   return (
-    <div className="relative h-[250px] w-full">
+    <div className="relative min-h-[300px]  w-full">
       <Button
         className="absolute top-4 left-4 z-50 rounded-full"
         variant="secondary"
         size={"icon"}
-        onClick={() => router.back()}
+        onClick={() => router.push(`/${slug}`)}
       >
         <ChevronLeftIcon />
       </Button>
@@ -31,8 +32,17 @@ const RestaurantHeader = ({ restaurant }: RestaurantHeaderProps) => {
         src={restaurant.coverImageUrl}
         alt={restaurant.name}
         fill
-        className="object-cover"
+        className="object-cover object-cente md:hidden"
       />
+      <div className="absolute hidden md:block inset-0 bg-destructive ">
+        <Image
+          src={restaurant.avatarImageUrl}
+          alt={restaurant.name}
+          width={70}
+          height={70}
+          className="rounded-full absolute top-0 bottom-0 left-0 right-0 m-auto"
+        />
+      </div>
       <Button
         className="absolute top-4 right-4 z-50 rounded-full"
         variant="secondary"

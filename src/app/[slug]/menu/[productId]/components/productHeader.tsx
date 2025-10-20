@@ -1,9 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Product } from "@prisma/client";
 import { ChevronLeftIcon, ScrollTextIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
 
 interface ProductHeaderProps {
   product: Pick<Product, "name" | "imageUrl">;
